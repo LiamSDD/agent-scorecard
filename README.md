@@ -1,5 +1,7 @@
 # agent-scorecard
 
+> **Archived.** This project grew into [Delegate](https://github.com/LiamSDD/delegate), an enterprise agent platform with a replayable run trace, automated checks, a policy engine and evals. This repo stays available read-only.
+
 Scorecards for AI coding agent runs. Drop in a Claude Code transcript, see what the agent did, what it cost, and whether the work holds up.
 
 ![tests](https://img.shields.io/badge/tests-176%20passing-1a7f37) ![license](https://img.shields.io/badge/license-MIT-0969da) ![next](https://img.shields.io/badge/Next.js-16-1f2328)
