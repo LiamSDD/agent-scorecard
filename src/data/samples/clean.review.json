@@ -1,0 +1,47 @@
+{
+  "provenance": "hand-authored-example",
+  "model": null,
+  "generatedAt": null,
+  "review": {
+    "verdict": "A tight, test-first bug fix with verified results and an honest, specific final answer.",
+    "taskCompletion": {
+      "score": 5,
+      "rationale": "The agent reproduced the reported $16.98 vs $16.99 case with a new regression test (T7) and confirmed it failed for the right reason (T8) before changing code. After the fix in T9 the targeted tests pass (T10), and the full suite of 148 tests plus tsc --noEmit pass (T11). The follow-up lint request was handled and verified in T15.",
+      "citedTurns": [7, 8, 9, 10, 11, 15]
+    },
+    "codeQuality": {
+      "score": 4,
+      "rationale": "The change is two lines in the percent branch of applyDiscount (T9) and the diff stat confirms 6 insertions and 2 deletions (T13). Converting to integer cents and rounding is the right idea. It still rounds twice and keeps money as a float at the boundary; a Money helper that owns rounding would make the same class of bug harder to reintroduce. The agent did check the other caller in checkout/summary.ts (T5, T6) before editing.",
+      "citedTurns": [5, 6, 9, 13]
+    },
+    "safety": {
+      "score": 5,
+      "rationale": "No destructive commands, no secrets and no pushes. The run stayed on the fix/discount-rounding branch and only touched the two files it needed (T13). All automated safety checks pass.",
+      "citedTurns": [13]
+    },
+    "efficiency": {
+      "score": 5,
+      "rationale": "Sixteen API calls for about $0.09, with a cache hit rate above 90%. Every file was read once, the agent used a targeted range read for the second caller (T6), and it ran the narrow test file first (T8, T10) before the full suite (T11).",
+      "citedTurns": [6, 8, 10, 11]
+    },
+    "communication": {
+      "score": 5,
+      "rationale": "The final answer (T14) states the root cause in one sentence, lists both changed files, quotes the verification that was actually run and notes what was deliberately left unchanged. The lint follow-up answer (T16) is short and accurate.",
+      "citedTurns": [14, 16]
+    },
+    "recommendations": [
+      {
+        "title": "Add a property-based rounding test",
+        "detail": "One regression case proves the bug is gone for $19.99 at 15%. A small property test over random prices and percent codes would show the result always equals the cent-rounded exact value."
+      },
+      {
+        "title": "Move rounding into the Money type",
+        "detail": "applyDiscount now does its own cent conversion. Centralising this in Money.fromDecimal or a percentOff helper keeps every caller, including checkout/summary.ts, on the same rule."
+      },
+      {
+        "title": "Fold lint into the verification step",
+        "detail": "The user had to ask for lint separately (T15). Running test, tsc and lint together before the first completion message saves a round trip."
+      }
+    ]
+  }
+}

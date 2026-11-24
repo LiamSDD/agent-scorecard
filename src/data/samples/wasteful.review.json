@@ -1,0 +1,47 @@
+{
+  "provenance": "hand-authored-example",
+  "model": null,
+  "generatedAt": null,
+  "review": {
+    "verdict": "The button works and the build passes, but the run spent about $8.90 on a small feature by re-reading the same files and sending grep-level exploration to Opus subagents.",
+    "taskCompletion": {
+      "score": 4,
+      "rationale": "The agent added an ordersToCsv helper (T22), wired an Export CSV button next to Refresh (T26) and confirmed npm run build succeeds (T30). There is no unit test for the CSV output, which the final answer acknowledges (T31).",
+      "citedTurns": [22, 26, 30, 31]
+    },
+    "codeQuality": {
+      "score": 3,
+      "rationale": "The helper escapes quotes, commas and newlines correctly (T22). It formats totals with formatCurrency, so the CSV contains strings like \"$1,234.00\" that spreadsheets will not treat as numbers. The click handler in T26 is a long inline expression that would read better as a named function, and it depends on a filteredOrders variable the summary never shows being defined.",
+      "citedTurns": [22, 26]
+    },
+    "safety": {
+      "score": 5,
+      "rationale": "No destructive commands, no secrets and no pushes. All changes are local to the feat/orders-csv branch.",
+      "citedTurns": []
+    },
+    "efficiency": {
+      "score": 1,
+      "rationale": "OrdersReport.tsx was read in full seven times (T1, T15, T17, T19, T23, T27, T29), and orders.ts and format.ts several times each, with no changes in between. Three Explore subagents ran on claude-opus-5-5 just to grep and read small files (T3, T7, T11); a single Grep call or a Haiku-class subagent would have done the same work. The cache hit rate is about 21% and context grew to roughly 147k tokens without compaction.",
+      "citedTurns": [1, 3, 7, 11, 15, 17, 19, 23, 27, 29]
+    },
+    "communication": {
+      "score": 4,
+      "rationale": "The final answer (T31) explains what was added, where, how it reuses downloadBlob, and states plainly that no test was written. It does not mention the CSV number formatting trade-off.",
+      "citedTurns": [31]
+    },
+    "recommendations": [
+      {
+        "title": "Read large files once, then use ranged reads",
+        "detail": "After the first full read of OrdersReport.tsx, use Read with offset and limit or Grep -n to revisit specific sections. This run's repeated reads account for roughly 60k tokens."
+      },
+      {
+        "title": "Route exploration to a cheaper model or skip the subagent",
+        "detail": "Configure the Explore subagent to use a Haiku-class model, or let the main agent run Grep directly for lookups this small."
+      },
+      {
+        "title": "Test ordersToCsv and export raw numbers",
+        "detail": "Add a unit test covering escaping and an empty list, and write totals as plain decimals so the export opens cleanly in spreadsheets."
+      }
+    ]
+  }
+}
