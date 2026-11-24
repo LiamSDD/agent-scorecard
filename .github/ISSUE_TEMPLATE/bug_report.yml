@@ -1,0 +1,47 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please do not attach real transcripts or anything containing secrets. A minimal synthetic snippet is ideal.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a sample run
+        2. Click ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Parser / upload
+        - Timeline
+        - Charts
+        - Automated checks or score
+        - AI review
+        - Compare
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and OS
+      placeholder: Firefox 140 on macOS 15
+  - type: textarea
+    id: transcript
+    attributes:
+      label: Minimal transcript lines (synthetic)
+      render: json
